@@ -43,7 +43,7 @@ def getDataFromExcel(specificFilePath):
 #filling the output areas
 ######################################################
 def fillOutputArea(outputBox,query):
-    outputBox.insert(END,query)
+    outputBox.insert(END,query+'\n')
 ######################################################
 
 
@@ -238,6 +238,7 @@ def logic():
         words = text.split()
         result = words[-1]
 
+
         if(stopTheProgram):
             driver.close()
             driver.quit()
@@ -252,6 +253,7 @@ def logic():
         element = driver.find_elements(By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick='L1_Entry()")
         operateElement("click",element[0],"",30)
 
+
         if(stopTheProgram):
             driver.close()
             driver.quit()
@@ -259,6 +261,7 @@ def logic():
         
         with open("./memo/log.txt", "w") as f:
             f.write("")
+
 
         global ii
         while(ii<len(listOfQuery)):
@@ -274,17 +277,20 @@ def logic():
                 placeOfResidence = listOfQuery[ii][4]
                 jointNumber = listOfQuery[ii][5]
                 nameOfInstitution = listOfQuery[ii][6]
-                villageName = listOfQuery[ii][7]
                 sector = listOfQuery[ii][7]
+                villageName = listOfQuery[ii][8]
                 element = getElement(driver,By.ID,"sr_no",10)
                 element.send_keys(Keys.BACKSPACE*4)
                 operateElement("send_keys",element,serialNumber,10)
                 element = getElement(driver,By.ID,"khata_no",10)
                 operateElement("send_keys",element,"",10)
 
+                print(listOfQuery[0])
+                print(villageName)
+
                 element = getElement(driver,By.ID,"vlg_list",10)
                 select = Select(element)
-                select.select_by_visible_text(villageName)
+                select.select_by_index(1)
 
                 while(1==1):
                     time.sleep(1)
@@ -392,33 +398,36 @@ def logic():
                 fillOutputArea(outputArea2,serialNumber)
                 fillOutputArea(outputArea3,serialNumber)
             except Exception as e:
+                print(e)
                 with open('./memo/log.txt','a') as f:
                     f.write(f'failed for {serialNumber} with error {e} at {datetime.now()}')
                 fillOutputArea(outputArea1,serialNumber)
                 driver.close()
                 driver.quit()
                 return
-            i+=1
+            ii+=1
+            print('working')
             time.sleep(1)
     except Exception as e:
+        print(e)
         with open('./memo/log.txt','a') as f:
             f.write(f'failed  with error {e} at {datetime.now()}')
-        fillOutputArea(outputArea1,serialNumber)
         driver.close()
         driver.quit()
         return
 
 
 nameOfThread = 'MyThread'
+def logicCaller():
+    global ii
+    while ii < len(listOfQuery):
+        logic()
 
 def startProgram():
     global stopTheProgram
     stopTheProgram = False
     startButton.config(state=DISABLED,bg='LIGHT GREEN')
-    threading.Thread(target=logic).start()
-    global ii
-    if(ii<len(listOfQuery)):
-         threading.Thread(target=logic,name = 'MyThread').start()
+    threading.Thread(target=logicCaller).start()
     stopButtonText.set("stop")
     stopButton.config(state=NORMAL,bg=orig_color)
     startButton.config(state=NORMAL,bg=orig_color)
