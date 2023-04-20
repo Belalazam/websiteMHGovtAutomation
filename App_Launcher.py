@@ -202,196 +202,214 @@ def decrypt_string(encrypted_string):
 #########################################################################################################################################
 def logic():
     global stopTheProgram
-    username = username_entry.get()
-    password = password_entry.get()
+    try:
+        username = username_entry.get()
+        password = password_entry.get()
 
-    #check if username valid 
-    with open('./appData/allowed_users.txt','r') as f_in:
-        text = f_in.read()
-    text = decrypt_string(text)
-    if(username not in text):
-        labelAuthText.set("Unauthorized")
-        with open('./memo/log.txt','a') as f:
-                f.write(f'unauthorized')
-        stopTheProgram = True
-        return
-    else:
-        labelAuthText.set("Authorized")
-
-    service = Service('chromedriver.exe')
-    driver = webdriver.Chrome(service=service) 
-    driver.get("https://agcensus.gov.in/AgriCensus/")
-    driver.maximize_window()
-    ##############################################################################################
-    element = driver.find_elements(By.CLASS_NAME,"hover-img")
-    operateElement("click",element[1],"",10)
-    driver.switch_to.window(driver.window_handles[-1]) 
-    element = getElement(driver,By.ID,"state_list",10)
-    select = Select(element)
-    select.select_by_visible_text("15 Maharashtra")
-    element = getElement(driver,By.ID,"user_id",10)
-    operateElement("send_keys",element,username,10)
-    element = getElement(driver,By.ID,"password",10)
-    operateElement("send_keys",element,password,10)
-    element = getElement(driver,By.ID,"captcha",10)
-    text = element.text
-    words = text.split()
-    result = words[-1]
-    element = getElement(driver,By.ID,"textbox",10)
-    operateElement("send_keys",element,result,10)
-    element = getElement(driver,By.ID,"Procced",10)
-    operateElement("click",element,"",10)
-    element = driver.find_elements(By.CSS_SELECTOR,"span.d-lg-flex.d-sm-inline-block.ms-lg-0.ms-3")
-    operateElement("click",element[1],"",10)
-    element = driver.find_elements(By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick='L1_Entry()")
-    operateElement("click",element[0],"",10)
-    
-    with open("./memo/log.txt", "w") as f:
-        f.write("")
-
-    global ii
-    while(ii<len(listOfQuery)):
-        try:
-            
-            if(stopTheProgram == True):
-                driver.close()
-                driver.quit()
-                return
-            serialNumber = listOfQuery[ii][0]
-            holdingType = listOfQuery[ii][1]
-            gender = listOfQuery[ii][2]
-            socialGroup = listOfQuery[ii][3]
-            placeOfResidence = listOfQuery[ii][4]
-            jointNumber = listOfQuery[ii][5]
-            nameOfInstitution = listOfQuery[ii][6]
-            villageName = listOfQuery[ii][7]
-            sector = listOfQuery[ii][7]
-            element = getElement(driver,By.ID,"sr_no",10)
-            element.send_keys(Keys.BACKSPACE*4)
-            operateElement("send_keys",element,serialNumber,10)
-            element = getElement(driver,By.ID,"khata_no",10)
-            operateElement("send_keys",element,"",10)
-
-            element = getElement(driver,By.ID,"vlg_list",10)
-            select = Select(element)
-            select.select_by_visible_text(villageName)
-
-            while(1==1):
-                time.sleep(1)
-                element = getElement(driver,By.CLASS_NAME,"loader",10)
-                if(element.is_displayed() == False):
-                    break
-            time.sleep(1)
-
-            z = getPerfectHoldingType(holdingType)
-            element = getElement(driver,By.ID,z,10)
-            operateElement("send_keys",element,'\n',10)
-            y = element.get_attribute("value")
-            a,b = getPhtCount(holdingType,y)
-            operateElement("send_keys",element,(Keys.ARROW_LEFT*a) + (Keys.ARROW_RIGHT*b),10)
-            if(z == 'joint'):
-                element = getElement(driver,By.ID,"joint_no",10)
-                operateElement("send_keys",element,Keys.BACKSPACE*2,10)
-                operateElement("send_keys",element,jointNumber,10)
-
-            time.sleep(1)
-            z = getPerfectGender(gender)
-            element = getElement(driver,By.ID,'male',10)
-            operateElement("send_keys",element,'\n',10)
-            y = element.get_attribute("value")
-            a,b = getPgCount(gender,y)
-            if(a==0 and b==0):
-                operateElement("send_keys",element,(Keys.ARROW_RIGHT*a)+(Keys.ARROW_LEFT*b),10)
-            else :
-                operateElement("send_keys",element,(Keys.ARROW_LEFT)+(Keys.ARROW_RIGHT),10)
-
-
-            z = getPerfectSoicalGroup(socialGroup)
-            element = getElement(driver,By.ID,z,10)
-            operateElement("send_keys",element,'\n',10)
-            y = element.get_attribute("value")
-            a,b = getPsgCount(socialGroup,y)
-            if(a==0 and b==0):
-                operateElement("send_keys",element,(Keys.ARROW_RIGHT*a)+(Keys.ARROW_LEFT*b),10)
-            else :  
-                operateElement("send_keys",element,(Keys.ARROW_LEFT)+(Keys.ARROW_RIGHT),10)
-                
-            time.sleep(1)
-            
-            element = getElement(driver,By.ID,"place_resident",10)
-            select = Select(element)
-            select.select_by_value(placeOfResidence)
-
-          
-            if(nameOfInstitution != None and nameOfInstitution!='None' and nameOfInstitution!='' and nameOfInstitution!=' '):
-                element = getElement(driver,By.ID,"inst_name",10)
-                operateElement("send_keys",element,Keys.BACKSPACE*30,10)
-                operateElement("send_keys",element,nameOfInstitution,10)
-                
-                time.sleep(1)
-
-                element = getElement(driver,By.ID,"inst_sector",10)
-                select = Select(element)
-                select.select_by_value(sector)
-            time.sleep(1)
-            
-            element = getElement(driver,By.ID,"tot_survey",10)
-            z = element.get_attribute("value")
-            z = int(z)
-            for j in range(0,z):
-                element1 = "area" + str(j+1)
-                element2 = "area" + str(j+1) + "_1"
-                element3 = "land_use_list"+str(j+1)
-                element4 = "operational_holder_list"+str(j+1)
-                a,b = 0,0
-                elements1 = getElement(driver,By.XPATH,f'//input[@name="{element1}"]',10)
-                elements2 = getElement(driver,By.XPATH,f'//input[@name="{element2}"]',10)
-                a = elements1.get_attribute("value")
-                b = elements2.get_attribute("value")
-                a,b = getleftright(a,b)
-                elements1.send_keys(Keys.BACKSPACE*4)
-                elements2.send_keys(Keys.BACKSPACE*4)
-                operateElement("send_keys",elements1,a,10)
-                operateElement("send_keys",elements2,b,10)
-                element = getElement(driver,By.XPATH,f'//select[@name="{element3}"]',10)
-                select = Select(element)
-                select.select_by_value("1")
-                element = getElement(driver,By.XPATH,f'//select[@name="{element4}"]',10)
-                select = Select(element)
-                select.select_by_value("1")
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            element = getElement(driver,By.XPATH,'//textarea[@name="remarks"]',10)
-            operateElement("send_keys",element,"" + Keys.TAB + Keys.ENTER,10)
-            time.sleep(1)
-            countTime = 0
-            while(1==1):
-                countTime+=1
-                time.sleep(1)
-                element = getElement(driver,By.CLASS_NAME,"loader",10)
-                if(element.is_displayed() == False):
-                    break
-                if(countTime >= 50):
-                    with open('./memo/log.txt','a') as f:
-                        f.write(f'{serialNumber} server was busy retrying for others {datetime.now()}')
-                    fillOutputArea(outputArea1,serialNumber)                      
-                    driver.close()
-                    driver.quit() 
-                    return
+        #check if username valid 
+        with open('./appData/allowed_users.txt','r') as f_in:
+            text = f_in.read()
+        text = decrypt_string(text)
+        if(username not in text):
+            labelAuthText.set("Unauthorized")
             with open('./memo/log.txt','a') as f:
-                f.write(f'{serialNumber} done at {datetime.now()}')
-            fillOutputArea(outputArea2,serialNumber)
-            fillOutputArea(outputArea3,serialNumber)
-        except Exception as e:
-            with open('./memo/log.txt','a') as f:
-                f.write(f'failed for {serialNumber} with error {e} at {datetime.now()}')
-            fillOutputArea(outputArea1,serialNumber)
+                    f.write(f'unauthorized' + '\n')
+            return
+        else:
+            labelAuthText.set("Authorized")
+
+        service = Service('chromedriver.exe')
+        driver = webdriver.Chrome(service=service) 
+        driver.get("https://agcensus.gov.in/AgriCensus/")
+        driver.maximize_window()
+        ##############################################################################################
+        element = driver.find_elements(By.CLASS_NAME,"hover-img")
+        operateElement("click",element[1],"",10)
+        driver.switch_to.window(driver.window_handles[-1]) 
+        element = getElement(driver,By.ID,"state_list",10)
+        select = Select(element)
+        select.select_by_visible_text("15 Maharashtra")
+        element = getElement(driver,By.ID,"user_id",10)
+        operateElement("send_keys",element,username,10)
+        element = getElement(driver,By.ID,"password",10)
+        operateElement("send_keys",element,password,10)
+        element = getElement(driver,By.ID,"captcha",10)
+        text = element.text
+        words = text.split()
+        result = words[-1]
+
+        if(stopTheProgram):
             driver.close()
             driver.quit()
             return
-        i+=1
-        time.sleep(1)
+        
+        element = getElement(driver,By.ID,"textbox",30)
+        operateElement("send_keys",element,result,30)
+        element = getElement(driver,By.ID,"Procced",30)
+        operateElement("click",element,"",30)
+        element = driver.find_elements(By.CSS_SELECTOR,"span.d-lg-flex.d-sm-inline-block.ms-lg-0.ms-3")
+        operateElement("click",element[1],"",30)
+        element = driver.find_elements(By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick='L1_Entry()")
+        operateElement("click",element[0],"",30)
+
+        if(stopTheProgram):
+            driver.close()
+            driver.quit()
+            return
+        
+        with open("./memo/log.txt", "w") as f:
+            f.write("")
+
+        global ii
+        while(ii<len(listOfQuery)):
+            try:
+                if(stopTheProgram):
+                    driver.close()
+                    driver.quit()
+                    return
+                serialNumber = listOfQuery[ii][0]
+                holdingType = listOfQuery[ii][1]
+                gender = listOfQuery[ii][2]
+                socialGroup = listOfQuery[ii][3]
+                placeOfResidence = listOfQuery[ii][4]
+                jointNumber = listOfQuery[ii][5]
+                nameOfInstitution = listOfQuery[ii][6]
+                villageName = listOfQuery[ii][7]
+                sector = listOfQuery[ii][7]
+                element = getElement(driver,By.ID,"sr_no",10)
+                element.send_keys(Keys.BACKSPACE*4)
+                operateElement("send_keys",element,serialNumber,10)
+                element = getElement(driver,By.ID,"khata_no",10)
+                operateElement("send_keys",element,"",10)
+
+                element = getElement(driver,By.ID,"vlg_list",10)
+                select = Select(element)
+                select.select_by_visible_text(villageName)
+
+                while(1==1):
+                    time.sleep(1)
+                    element = getElement(driver,By.CLASS_NAME,"loader",10)
+                    if(element.is_displayed() == False):
+                        break
+                time.sleep(1)
+
+                z = getPerfectHoldingType(holdingType)
+                element = getElement(driver,By.ID,z,10)
+                operateElement("send_keys",element,'\n',10)
+                y = element.get_attribute("value")
+                a,b = getPhtCount(holdingType,y)
+                operateElement("send_keys",element,(Keys.ARROW_LEFT*a) + (Keys.ARROW_RIGHT*b),10)
+                if(z == 'joint'):
+                    element = getElement(driver,By.ID,"joint_no",10)
+                    operateElement("send_keys",element,Keys.BACKSPACE*2,10)
+                    operateElement("send_keys",element,jointNumber,10)
+
+                time.sleep(1)
+                z = getPerfectGender(gender)
+                element = getElement(driver,By.ID,'male',10)
+                operateElement("send_keys",element,'\n',10)
+                y = element.get_attribute("value")
+                a,b = getPgCount(gender,y)
+                if(a==0 and b==0):
+                    operateElement("send_keys",element,(Keys.ARROW_RIGHT*a)+(Keys.ARROW_LEFT*b),10)
+                else :
+                    operateElement("send_keys",element,(Keys.ARROW_LEFT)+(Keys.ARROW_RIGHT),10)
 
 
+                z = getPerfectSoicalGroup(socialGroup)
+                element = getElement(driver,By.ID,z,10)
+                operateElement("send_keys",element,'\n',10)
+                y = element.get_attribute("value")
+                a,b = getPsgCount(socialGroup,y)
+                if(a==0 and b==0):
+                    operateElement("send_keys",element,(Keys.ARROW_RIGHT*a)+(Keys.ARROW_LEFT*b),10)
+                else :  
+                    operateElement("send_keys",element,(Keys.ARROW_LEFT)+(Keys.ARROW_RIGHT),10)
+                    
+                time.sleep(1)
+                
+                element = getElement(driver,By.ID,"place_resident",10)
+                select = Select(element)
+                select.select_by_value(placeOfResidence)
+
+            
+                if(nameOfInstitution != None and nameOfInstitution!='None' and nameOfInstitution!='' and nameOfInstitution!=' '):
+                    element = getElement(driver,By.ID,"inst_name",10)
+                    operateElement("send_keys",element,Keys.BACKSPACE*30,10)
+                    operateElement("send_keys",element,nameOfInstitution,10)
+                    
+                    time.sleep(1)
+
+                    element = getElement(driver,By.ID,"inst_sector",10)
+                    select = Select(element)
+                    select.select_by_value(sector)
+                time.sleep(1)
+                
+                element = getElement(driver,By.ID,"tot_survey",10)
+                z = element.get_attribute("value")
+                z = int(z)
+                for j in range(0,z):
+                    element1 = "area" + str(j+1)
+                    element2 = "area" + str(j+1) + "_1"
+                    element3 = "land_use_list"+str(j+1)
+                    element4 = "operational_holder_list"+str(j+1)
+                    a,b = 0,0
+                    elements1 = getElement(driver,By.XPATH,f'//input[@name="{element1}"]',10)
+                    elements2 = getElement(driver,By.XPATH,f'//input[@name="{element2}"]',10)
+                    a = elements1.get_attribute("value")
+                    b = elements2.get_attribute("value")
+                    a,b = getleftright(a,b)
+                    elements1.send_keys(Keys.BACKSPACE*4)
+                    elements2.send_keys(Keys.BACKSPACE*4)
+                    operateElement("send_keys",elements1,a,10)
+                    operateElement("send_keys",elements2,b,10)
+                    element = getElement(driver,By.XPATH,f'//select[@name="{element3}"]',10)
+                    select = Select(element)
+                    select.select_by_value("1")
+                    element = getElement(driver,By.XPATH,f'//select[@name="{element4}"]',10)
+                    select = Select(element)
+                    select.select_by_value("1")
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                element = getElement(driver,By.XPATH,'//textarea[@name="remarks"]',10)
+                operateElement("send_keys",element,"" + Keys.TAB + Keys.ENTER,10)
+                time.sleep(1)
+                countTime = 0
+                while(1==1):
+                    countTime+=1
+                    time.sleep(1)
+                    element = getElement(driver,By.CLASS_NAME,"loader",10)
+                    if(element.is_displayed() == False):
+                        break
+                    if(countTime >= 50):
+                        with open('./memo/log.txt','a') as f:
+                            f.write(f'{serialNumber} server was busy retrying for others {datetime.now()}')
+                        fillOutputArea(outputArea1,serialNumber)                      
+                        driver.close()
+                        driver.quit() 
+                        return
+                with open('./memo/log.txt','a') as f:
+                    f.write(f'{serialNumber} done at {datetime.now()}')
+                fillOutputArea(outputArea2,serialNumber)
+                fillOutputArea(outputArea3,serialNumber)
+            except Exception as e:
+                with open('./memo/log.txt','a') as f:
+                    f.write(f'failed for {serialNumber} with error {e} at {datetime.now()}')
+                fillOutputArea(outputArea1,serialNumber)
+                driver.close()
+                driver.quit()
+                return
+            i+=1
+            time.sleep(1)
+    except Exception as e:
+        with open('./memo/log.txt','a') as f:
+            f.write(f'failed  with error {e} at {datetime.now()}')
+        fillOutputArea(outputArea1,serialNumber)
+        driver.close()
+        driver.quit()
+        return
+
+
+nameOfThread = 'MyThread'
 
 def startProgram():
     global stopTheProgram
@@ -399,20 +417,27 @@ def startProgram():
     startButton.config(state=DISABLED,bg='LIGHT GREEN')
     threading.Thread(target=logic).start()
     global ii
-    if(stopTheProgram == False and ii<len(listOfQuery)):
-         threading.Thread(target=logic).start()
+    if(ii<len(listOfQuery)):
+         threading.Thread(target=logic,name = 'MyThread').start()
     stopButtonText.set("stop")
     stopButton.config(state=NORMAL,bg=orig_color)
     startButton.config(state=NORMAL,bg=orig_color)
 
-def stopIt():
-    global stopTheProgram
-    stopTheProgram = True
+
 
 def stopProgram():
-    stopButtonText.set("stopping")
-    stopButton.config(state=DISABLED,bg='RED')
-    threading.Thread(target=stopIt).start()
+    stopButtonText.set("stoping")
+    stopButton.config(state=DISABLED,bg='red')
+    global stopTheProgram
+    global nameOfThread
+    for thread in threading.enumerate():
+        if(thread.name!='MainThread'):
+            stopTheProgram = True
+            thread.join()
+
+    stopButtonText.set("stop")
+    startButton.config(state=NORMAL,bg=orig_color)
+    
 
 
 root = Tk()
