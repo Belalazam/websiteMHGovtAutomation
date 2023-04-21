@@ -278,19 +278,17 @@ def logic():
                 jointNumber = listOfQuery[ii][5]
                 nameOfInstitution = listOfQuery[ii][6]
                 sector = listOfQuery[ii][7]
-                villageName = listOfQuery[ii][8]
+                villageIndex = listOfQuery[ii][8]
                 element = getElement(driver,By.ID,"sr_no",10)
                 element.send_keys(Keys.BACKSPACE*4)
                 operateElement("send_keys",element,serialNumber,10)
                 element = getElement(driver,By.ID,"khata_no",10)
                 operateElement("send_keys",element,"",10)
 
-                print(listOfQuery[0])
-                print(villageName)
 
                 element = getElement(driver,By.ID,"vlg_list",10)
                 select = Select(element)
-                select.select_by_index(1)
+                select.select_by_index(int(villageIndex))
 
                 while(1==1):
                     time.sleep(1)
