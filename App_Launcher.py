@@ -26,8 +26,20 @@ def getDataFromExcel(specificFilePath):
     wb = openpyxl.load_workbook(specificFilePath)
     sheet = wb.active
     data = []
+    memory = {}
+    with open("./memo/failure.txt",'r') as f:
+        for line in f:
+            line = line.strip()
+            memory[str(line)] = True   
+    with open("./memo/memory.txt",'r') as f:
+        for line in f:
+            line = line.strip()
+            memory[str(line)] = True
     for i in range(2,sheet.max_row+1):
         temp = []
+        tempz = str(sheet.cell(row=i,column=10).value)
+        if(memory.get(tempz) != None):
+            continue
         temp.append(str(sheet.cell(row=i,column=10).value))
         temp.append(str(sheet.cell(row=i,column=14).value))
         temp.append(str(sheet.cell(row=i,column=16).value))
@@ -42,8 +54,11 @@ def getDataFromExcel(specificFilePath):
 
 #filling the output areas
 ######################################################
-def fillOutputArea(outputBox,query):
-    outputBox.insert(END,query+'\n')
+def fillOutputArea(outputBox,query,mode):
+    if(mode == 0):
+        outputBox.insert(END,query+'\n')
+    else :
+        outputBox.insert(END,query)
 ######################################################
 
 
@@ -279,16 +294,10 @@ def logic():
                 nameOfInstitution = listOfQuery[ii][6]
                 sector = listOfQuery[ii][7]
                 villageIndex = listOfQuery[ii][8]
-                element = getElement(driver,By.ID,"sr_no",10)
-                element.send_keys(Keys.BACKSPACE*4)
-                operateElement("send_keys",element,serialNumber,10)
-                element = getElement(driver,By.ID,"khata_no",10)
-                operateElement("send_keys",element,"",10)
-
 
                 element = getElement(driver,By.ID,"vlg_list",10)
                 select = Select(element)
-                select.select_by_index(int(villageIndex))
+                select.select_by_index(1)
 
                 while(1==1):
                     time.sleep(1)
@@ -296,6 +305,21 @@ def logic():
                     if(element.is_displayed() == False):
                         break
                 time.sleep(1)
+
+                element = getElement(driver,By.ID,"sr_no",10)
+                element.send_keys(Keys.BACKSPACE*4)
+                operateElement("send_keys",element,serialNumber,10)
+                element = getElement(driver,By.ID,"khata_no",10)
+                operateElement("send_keys",element,"",10)
+
+                while(1==1):
+                    time.sleep(1)
+                    element = getElement(driver,By.CLASS_NAME,"loader",10)
+                    if(element.is_displayed() == False):
+                        break
+                time.sleep(1)
+
+
 
                 z = getPerfectHoldingType(holdingType)
                 element = getElement(driver,By.ID,z,10)
@@ -386,20 +410,29 @@ def logic():
                         break
                     if(countTime >= 50):
                         with open('./memo/log.txt','a') as f:
-                            f.write(f'{serialNumber} server was busy retrying for others {datetime.now()}')
-                        fillOutputArea(outputArea1,serialNumber)                      
+                            f.write(f'{serialNumber} server was busy retrying for others {datetime.now()}' + '\n')
+                        with open('./memo/failure.txt','a') as f:
+                            f.write(f'{serialNumber}' + '\n')
+                        fillOutputArea(outputArea1,serialNumber,0)                      
                         driver.close()
                         driver.quit() 
                         return
                 with open('./memo/log.txt','a') as f:
-                    f.write(f'{serialNumber} done at {datetime.now()}')
-                fillOutputArea(outputArea2,serialNumber)
-                fillOutputArea(outputArea3,serialNumber)
+                    f.write(f'{serialNumber} done at {datetime.now()}' + '\n')
+                with open('./memo/success.txt','a') as f:
+                    f.write(f'{serialNumber}' + '\n')
+                with open('./memo/memory.txt','a') as f:
+                    f.write(f'{serialNumber}' + '\n')
+                    
+                fillOutputArea(outputArea2,serialNumber,0)
+                fillOutputArea(outputArea3,serialNumber,0)
             except Exception as e:
                 print(e)
                 with open('./memo/log.txt','a') as f:
-                    f.write(f'failed for {serialNumber} with error {e} at {datetime.now()}')
-                fillOutputArea(outputArea1,serialNumber)
+                    f.write(f'failed for {serialNumber} with error {e} at {datetime.now()}' + '\n')
+                with open('./memo/failure.txt','a') as f:
+                    f.write(f'{serialNumber}' + '\n')
+                fillOutputArea(outputArea1,serialNumber,0)
                 driver.close()
                 driver.quit()
                 return
@@ -409,7 +442,7 @@ def logic():
     except Exception as e:
         print(e)
         with open('./memo/log.txt','a') as f:
-            f.write(f'failed  with error {e} at {datetime.now()}')
+            f.write(f'failed  with error {e} at {datetime.now()}' + '\n')
         driver.close()
         driver.quit()
         return
@@ -538,15 +571,15 @@ password_entry.bind('<KeyRelease>', on_change2)
 
 with open ("./memo/failure.txt","r") as f:
     for line in f:
-        fillOutputArea(outputArea1,line)
+        fillOutputArea(outputArea1,line,1)
 
 with open ("./memo/success.txt","r") as f:
     for line in f:
-        fillOutputArea(outputArea2,line)
+        fillOutputArea(outputArea2,line,1)
 
 with open ("./memo/memory.txt","r") as f:
     for line in f:
-        fillOutputArea(outputArea3,line)
+        fillOutputArea(outputArea3,line,1)
 
 with open ("./memo/username.txt","r") as f:
     for line in f:
