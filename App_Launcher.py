@@ -297,7 +297,7 @@ def logic():
 
                 element = getElement(driver,By.ID,"vlg_list",10)
                 select = Select(element)
-                select.select_by_index(1)
+                select.select_by_index(villageIndex)
 
                 while(1==1):
                     time.sleep(1)
