@@ -1,5 +1,4 @@
 import sys
-import docx
 import time
 import openpyxl
 import threading
