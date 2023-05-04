@@ -295,7 +295,7 @@ def logic():
                 time.sleep(1)
 
                 element = getElement(driver,By.ID,"sr_no",10)
-                element.send_keys(Keys.BACKSPACE*4)
+                element.send_keys(Keys.BACKSPACE*7)
                 operateElement("send_keys",element,serialNumber,10)
                 element = getElement(driver,By.ID,"khata_no",10)
                 operateElement("send_keys",element,"",10)
