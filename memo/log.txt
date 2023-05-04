@@ -1,57 +1,58 @@
-907 done at 2023-04-22 03:28:14.514965
-906 done at 2023-04-22 03:28:36.893397
-failed for 1215 with error Message: no such window: target window already closed
+1 done at 2023-04-27 14:45:38.035638
+971 done at 2023-04-27 14:46:27.842724
+21 done at 2023-04-27 14:47:16.257002
+failed for 908 with error Message: no such window: target window already closed
 from unknown error: web view not found
   (Session info: chrome=112.0.5615.138)
 Stacktrace:
 Backtrace:
-	GetHandleVerifier [0x00D6DCE3+50899]
-	(No symbol) [0x00CFE111]
-	(No symbol) [0x00C05588]
-	(No symbol) [0x00BED333]
-	(No symbol) [0x00C4F4DB]
-	(No symbol) [0x00C5DB33]
-	(No symbol) [0x00C4B6F6]
-	(No symbol) [0x00C27708]
-	(No symbol) [0x00C2886D]
-	GetHandleVerifier [0x00FD3EAE+2566302]
-	GetHandleVerifier [0x010092B1+2784417]
-	GetHandleVerifier [0x0100327C+2759788]
-	GetHandleVerifier [0x00E05740+672048]
-	(No symbol) [0x00D08872]
-	(No symbol) [0x00D041C8]
-	(No symbol) [0x00D042AB]
-	(No symbol) [0x00CF71B7]
-	BaseThreadInitThunk [0x76597D69+25]
-	RtlInitializeExceptionChain [0x77CBB74B+107]
-	RtlClearBits [0x77CBB6CF+191]
- at 2023-04-22 03:28:46.598454
+	GetHandleVerifier [0x00C9DCE3+50899]
+	(No symbol) [0x00C2E111]
+	(No symbol) [0x00B35588]
+	(No symbol) [0x00B1D333]
+	(No symbol) [0x00B7F4DB]
+	(No symbol) [0x00B8DB33]
+	(No symbol) [0x00B7B6F6]
+	(No symbol) [0x00B57708]
+	(No symbol) [0x00B5886D]
+	GetHandleVerifier [0x00F03EAE+2566302]
+	GetHandleVerifier [0x00F392B1+2784417]
+	GetHandleVerifier [0x00F3327C+2759788]
+	GetHandleVerifier [0x00D35740+672048]
+	(No symbol) [0x00C38872]
+	(No symbol) [0x00C341C8]
+	(No symbol) [0x00C342AB]
+	(No symbol) [0x00C271B7]
+	BaseThreadInitThunk [0x75ED7D69+25]
+	RtlInitializeExceptionChain [0x7706B74B+107]
+	RtlClearBits [0x7706B6CF+191]
+ at 2023-04-27 14:47:44.295311
 failed  with error Message: disconnected: not connected to DevTools
   (failed to check if window was closed: disconnected: not connected to DevTools)
   (Session info: chrome=112.0.5615.138)
 Stacktrace:
 Backtrace:
-	GetHandleVerifier [0x00D6DCE3+50899]
-	(No symbol) [0x00CFE111]
-	(No symbol) [0x00C05588]
-	(No symbol) [0x00BF70CB]
-	(No symbol) [0x00BF778A]
-	(No symbol) [0x00BF7728]
-	(No symbol) [0x00BEC37A]
-	(No symbol) [0x00BECBD7]
-	(No symbol) [0x00C53C48]
-	(No symbol) [0x00C4B8C3]
-	(No symbol) [0x00C27708]
-	(No symbol) [0x00C2886D]
-	GetHandleVerifier [0x00FD3EAE+2566302]
-	GetHandleVerifier [0x010092B1+2784417]
-	GetHandleVerifier [0x0100327C+2759788]
-	GetHandleVerifier [0x00E05740+672048]
-	(No symbol) [0x00D08872]
-	(No symbol) [0x00D041C8]
-	(No symbol) [0x00D042AB]
-	(No symbol) [0x00CF71B7]
-	BaseThreadInitThunk [0x76597D69+25]
-	RtlInitializeExceptionChain [0x77CBB74B+107]
-	RtlClearBits [0x77CBB6CF+191]
- at 2023-04-22 03:28:46.603276
+	GetHandleVerifier [0x00C9DCE3+50899]
+	(No symbol) [0x00C2E111]
+	(No symbol) [0x00B35588]
+	(No symbol) [0x00B270CB]
+	(No symbol) [0x00B2778A]
+	(No symbol) [0x00B27728]
+	(No symbol) [0x00B1C37A]
+	(No symbol) [0x00B1CBD7]
+	(No symbol) [0x00B83C48]
+	(No symbol) [0x00B7B8C3]
+	(No symbol) [0x00B57708]
+	(No symbol) [0x00B5886D]
+	GetHandleVerifier [0x00F03EAE+2566302]
+	GetHandleVerifier [0x00F392B1+2784417]
+	GetHandleVerifier [0x00F3327C+2759788]
+	GetHandleVerifier [0x00D35740+672048]
+	(No symbol) [0x00C38872]
+	(No symbol) [0x00C341C8]
+	(No symbol) [0x00C342AB]
+	(No symbol) [0x00C271B7]
+	BaseThreadInitThunk [0x75ED7D69+25]
+	RtlInitializeExceptionChain [0x7706B74B+107]
+	RtlClearBits [0x7706B6CF+191]
+ at 2023-04-27 14:47:44.300697

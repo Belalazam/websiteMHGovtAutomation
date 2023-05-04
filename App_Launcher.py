@@ -18,8 +18,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 #globla variables
 listOfQuery = []
-stopTheProgram = False
-ii = 0
+ii = -1
 
 #loading the excel file
 def getDataFromExcel(specificFilePath):
@@ -49,6 +48,9 @@ def getDataFromExcel(specificFilePath):
         temp.append(str(sheet.cell(row=i,column=22).value))
         temp.append(str(sheet.cell(row=i,column=23).value))
         temp.append(str(sheet.cell(row=i,column=7).value))
+        temp.append(str(sheet.cell(row=i,column=34).value))
+        temp.append(str(sheet.cell(row=i,column=35).value))
+        temp.append(str(sheet.cell(row=i,column=36).value))
         data.append(temp)
     return data
 
@@ -184,7 +186,7 @@ def getPsgCount(s,y):
     
 def getleftright(a,b):
     decimal_value = float(str(a) + '.' + str(b))
-    decimal_value = decimal_value/4
+    decimal_value = decimal_value/int(divider.get())
     decimal_value = str(decimal_value).split('.')
     return decimal_value[0],decimal_value[1]
 #########################################################################################################################################
@@ -216,7 +218,6 @@ def decrypt_string(encrypted_string):
     return decrypted.decode()
 #########################################################################################################################################
 def logic():
-    global stopTheProgram
     try:
         username = username_entry.get()
         password = password_entry.get()
@@ -252,12 +253,6 @@ def logic():
         text = element.text
         words = text.split()
         result = words[-1]
-
-
-        if(stopTheProgram):
-            driver.close()
-            driver.quit()
-            return
         
         element = getElement(driver,By.ID,"textbox",30)
         operateElement("send_keys",element,result,30)
@@ -268,23 +263,14 @@ def logic():
         element = driver.find_elements(By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick='L1_Entry()")
         operateElement("click",element[0],"",30)
 
-
-        if(stopTheProgram):
-            driver.close()
-            driver.quit()
-            return
-        
         with open("./memo/log.txt", "w") as f:
             f.write("")
-
-
+ 
         global ii
+        serialNumber = 0
         while(ii<len(listOfQuery)):
             try:
-                if(stopTheProgram):
-                    driver.close()
-                    driver.quit()
-                    return
+                ii = ii+1
                 serialNumber = listOfQuery[ii][0]
                 holdingType = listOfQuery[ii][1]
                 gender = listOfQuery[ii][2]
@@ -294,11 +280,13 @@ def logic():
                 nameOfInstitution = listOfQuery[ii][6]
                 sector = listOfQuery[ii][7]
                 villageIndex = listOfQuery[ii][8]
-
+                landUse = listOfQuery[ii][9]
+                landUseType = listOfQuery[ii][10]
+                operationHolder = str(listOfQuery[ii][11])
                 element = getElement(driver,By.ID,"vlg_list",10)
                 select = Select(element)
                 select.select_by_index(villageIndex)
-
+ 
                 while(1==1):
                     time.sleep(1)
                     element = getElement(driver,By.CLASS_NAME,"loader",10)
@@ -334,7 +322,7 @@ def logic():
 
                 time.sleep(1)
                 z = getPerfectGender(gender)
-                element = getElement(driver,By.ID,'male',10)
+                element = getElement(driver,By.ID,z,10)
                 operateElement("send_keys",element,'\n',10)
                 y = element.get_attribute("value")
                 a,b = getPgCount(gender,y)
@@ -359,7 +347,7 @@ def logic():
                 element = getElement(driver,By.ID,"place_resident",10)
                 select = Select(element)
                 select.select_by_value(placeOfResidence)
-
+    
             
                 if(nameOfInstitution != None and nameOfInstitution!='None' and nameOfInstitution!='' and nameOfInstitution!=' '):
                     element = getElement(driver,By.ID,"inst_name",10)
@@ -381,6 +369,8 @@ def logic():
                     element2 = "area" + str(j+1) + "_1"
                     element3 = "land_use_list"+str(j+1)
                     element4 = "operational_holder_list"+str(j+1)
+                    element5 = "land_use_type_list"+str(j+1)
+                    element6 = "tot_hold" + str(j+1)
                     a,b = 0,0
                     elements1 = getElement(driver,By.XPATH,f'//input[@name="{element1}"]',10)
                     elements2 = getElement(driver,By.XPATH,f'//input[@name="{element2}"]',10)
@@ -391,15 +381,24 @@ def logic():
                     elements2.send_keys(Keys.BACKSPACE*4)
                     operateElement("send_keys",elements1,a,10)
                     operateElement("send_keys",elements2,b,10)
+
                     element = getElement(driver,By.XPATH,f'//select[@name="{element3}"]',10)
                     select = Select(element)
-                    select.select_by_value("1")
-                    element = getElement(driver,By.XPATH,f'//select[@name="{element4}"]',10)
-                    select = Select(element)
-                    select.select_by_value("1")
+                    select.select_by_value(landUse) 
+                    if(landUse == '1'):
+                        element = getElement(driver,By.XPATH,f'//select[@name="{element4}"]',10)
+                        select = Select(element)
+                        select.select_by_value('1')
+                    if(landUse == '2'):
+                        element = getElement(driver,By.XPATH,f'//select[@name="{element5}"]',10)
+                        select = Select(element)
+                        select.select_by_value(landUseType)
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 element = getElement(driver,By.XPATH,'//textarea[@name="remarks"]',10)
-                operateElement("send_keys",element,"" + Keys.TAB + Keys.ENTER,10)
+                if(z<=10):
+                    operateElement("send_keys",element,"" + Keys.TAB + Keys.ENTER,10)
+                else:
+                    operateElement("send_keys",element,"" + Keys.TAB + Keys.TAB + Keys.ENTER,10)
                 time.sleep(1)
                 countTime = 0
                 while(1==1):
@@ -427,7 +426,7 @@ def logic():
                 fillOutputArea(outputArea2,serialNumber,0)
                 fillOutputArea(outputArea3,serialNumber,0)
             except Exception as e:
-                print(e)
+                print(e) 
                 with open('./memo/log.txt','a') as f:
                     f.write(f'failed for {serialNumber} with error {e} at {datetime.now()}' + '\n')
                 with open('./memo/failure.txt','a') as f:
@@ -436,8 +435,6 @@ def logic():
                 driver.close()
                 driver.quit()
                 return
-            ii+=1
-            print('working')
             time.sleep(1)
     except Exception as e:
         print(e)
@@ -448,36 +445,23 @@ def logic():
         return
 
 
-nameOfThread = 'MyThread'
 def logicCaller():
     global ii
     while ii < len(listOfQuery):
         logic()
+    programDone()
+    
+
+def programDone():
+    labelDoneText.set("Done")
+    labelDone.config(bg='green')
+    
 
 def startProgram():
-    global stopTheProgram
-    stopTheProgram = False
     startButton.config(state=DISABLED,bg='LIGHT GREEN')
-    threading.Thread(target=logicCaller).start()
-    stopButtonText.set("stop")
-    stopButton.config(state=NORMAL,bg=orig_color)
+    for i in range(int(threadCount.get())):
+        threading.Thread(target=logicCaller).start()
     startButton.config(state=NORMAL,bg=orig_color)
-
-
-
-def stopProgram():
-    stopButtonText.set("stoping")
-    stopButton.config(state=DISABLED,bg='red')
-    global stopTheProgram
-    global nameOfThread
-    for thread in threading.enumerate():
-        if(thread.name!='MainThread'):
-            stopTheProgram = True
-            thread.join()
-
-    stopButtonText.set("stop")
-    startButton.config(state=NORMAL,bg=orig_color)
-    
 
 
 root = Tk()
@@ -612,17 +596,30 @@ def log_button_click():
 startButton = Button(root, text="START", command=startProgram)
 startButton.grid(row=0,column=16,padx=3,pady=5)
 
-
-stopButtonText = StringVar()
-stopButtonText.set("STOP")
-stopButton = Button(root, textvariable=stopButtonText, command=stopProgram)
-stopButton.grid(row=0,column=17,padx=3,pady=5)
-
 labelAuthText = StringVar()
 labelAuthText.set("")
 labelAuth = Label(root,textvariable=labelAuthText)
 labelAuth.grid(row=0, column=10, padx=0, pady=0, sticky=W)
 
+labelDoneText = StringVar()
+labelDoneText.set("")
+labelDone = Label(root,textvariable=labelDoneText)
+labelDone.grid(row=0, column=7, padx=0, pady=0, sticky=W)
+
+
+labelDivider = Label(root, text="enter divider:")
+labelDivider.grid(row=0, column=8, padx=0, pady=0, sticky=W)
+divider = Entry(root)
+divider.grid(row=0, column=9, padx=5, pady=5)
+
+threadCountLabel = Label(root, text="threads:")
+threadCountLabel.grid(row=1, column=8, padx=0, pady=0, sticky=W)
+threadCount = Entry(root)
+threadCount.grid(row=1, column=9, padx=5, pady=5)
+
+
 logButton = Button(root, text="LOG", command=log_button_click)
 logButton.grid(row=0,column=15,padx=3,pady=5)
 root.mainloop()
+
+
