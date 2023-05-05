@@ -184,6 +184,10 @@ def getPsgCount(s,y):
         return 0,0    
     
 def getleftright(a,b):
+    checkStr = str(b)
+    for j in checkStr:
+        if(j=='E' or j=='e'):
+            return a,'0001'
     decimal_value = float(str(a) + '.' + str(b))
     decimal_value = decimal_value/int(divider.get())
     decimal_value = str(decimal_value).split('.')
