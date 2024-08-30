@@ -264,11 +264,20 @@ def logic():
         operateElement("click",element,"",30)
  
         element = getElements(driver, By.CSS_SELECTOR,"span.d-lg-flex.d-sm-inline-block.ms-lg-0.ms-3", 30)
+
         operateElement("click",element[2],"",30)
-        element = getElements(driver, By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick^='Schedule_H_Entry']", 30)
+
+
+
+        element = getElements(driver, By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick="Schedule_H_Entry('H')"", 30)
+
+        print("2nd")
+        time.sleep(10)
+        print(element)
     
         operateElement("click",element[0],"",30)
      
+        time.sleep(30)
      
 
         with open("./memo/log.txt", "w") as f:

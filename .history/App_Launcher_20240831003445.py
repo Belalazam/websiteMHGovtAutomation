@@ -196,11 +196,11 @@ def getleftright(a,b):
 def getElement(driver,byWhat,strng,waitTime):
     wait = WebDriverWait(driver, waitTime)
     return wait.until(EC.presence_of_element_located((byWhat,strng)))
-#####################################################################################################
+#####################################################################################################33
 def getElements(driver, byWhat, strng, waitTime):
     wait = WebDriverWait(driver, waitTime)
     return wait.until(EC.presence_of_all_elements_located((byWhat, strng)))
-#################################################################################################################
+
 def operateElement(value,element,keysValue,waitTime):
     start_time = time.time()
     if(value == "click"):
@@ -263,12 +263,25 @@ def logic():
         element = getElement(driver,By.ID,"Procced",30)
         operateElement("click",element,"",30)
  
-        element = getElements(driver, By.CSS_SELECTOR,"span.d-lg-flex.d-sm-inline-block.ms-lg-0.ms-3", 30)
+        element = getElement(driver, By.CSS_SELECTOR,"span.d-lg-flex.d-sm-inline-block.ms-lg-0.ms-3", 30)
+
+        print("1st")
+        time.sleep(10)
+        print(element)
+
         operateElement("click",element[2],"",30)
-        element = getElements(driver, By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick^='Schedule_H_Entry']", 30)
+
+
+
+        element = getElement(driver, By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick='L1_Entry()", 30)
+
+        print("2nd")
+        time.sleep(10)
+        print(element)
     
         operateElement("click",element[0],"",30)
      
+        time.sleep(30)
      
 
         with open("./memo/log.txt", "w") as f:

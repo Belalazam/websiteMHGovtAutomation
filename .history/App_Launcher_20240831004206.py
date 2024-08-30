@@ -269,6 +269,7 @@ def logic():
     
         operateElement("click",element[0],"",30)
      
+        time.sleep(30)
      
 
         with open("./memo/log.txt", "w") as f:

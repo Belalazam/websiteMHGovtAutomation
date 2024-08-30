@@ -196,11 +196,7 @@ def getleftright(a,b):
 def getElement(driver,byWhat,strng,waitTime):
     wait = WebDriverWait(driver, waitTime)
     return wait.until(EC.presence_of_element_located((byWhat,strng)))
-#####################################################################################################
-def getElements(driver, byWhat, strng, waitTime):
-    wait = WebDriverWait(driver, waitTime)
-    return wait.until(EC.presence_of_all_elements_located((byWhat, strng)))
-#################################################################################################################
+
 def operateElement(value,element,keysValue,waitTime):
     start_time = time.time()
     if(value == "click"):
@@ -229,23 +225,26 @@ def logic():
         username = username_entry.get()
         password = password_entry.get()
 
-        # #check if username valid 
-        # with open('./appData/allowed_users.txt','r') as f_in:
-        #     text = f_in.read()
-        # text = decrypt_string(text)
-        # if(username not in text):
-        #     labelAuthText.set("Unauthorized")
-        #     with open('./memo/log.txt','a') as f:
-        #             f.write(f'unauthorized' + '\n')
-        #     return
-        # else:
-        #     labelAuthText.set("Authorized")
+        #check if username valid 
+        with open('./appData/allowed_users.txt','r') as f_in:
+            text = f_in.read()
+        text = decrypt_string(text)
+        if(username not in text):
+            labelAuthText.set("Unauthorized")
+            with open('./memo/log.txt','a') as f:
+                    f.write(f'unauthorized' + '\n')
+            return
+        else:
+            labelAuthText.set("Authorized")
 
         service = Service('chromedriver.exe')
         driver = webdriver.Chrome(service=service) 
-        driver.get("https://agcensus.gov.in/AgriCensus/Agri_2122.jsp")
+        driver.get("https://agcensus.gov.in/AgriCensus/")
         driver.maximize_window()
         ##############################################################################################
+        element = driver.find_elements(By.CLASS_NAME,"hover-img")
+        operateElement("click",element[1],"",10)
+        driver.switch_to.window(driver.window_handles[-1]) 
         element = getElement(driver,By.ID,"state_list",10)
         select = Select(element)
         select.select_by_visible_text("15 Maharashtra")
@@ -257,19 +256,15 @@ def logic():
         text = element.text
         words = text.split()
         result = words[-1]
-
+        
         element = getElement(driver,By.ID,"textbox",30)
         operateElement("send_keys",element,result,30)
         element = getElement(driver,By.ID,"Procced",30)
         operateElement("click",element,"",30)
- 
-        element = getElements(driver, By.CSS_SELECTOR,"span.d-lg-flex.d-sm-inline-block.ms-lg-0.ms-3", 30)
-        operateElement("click",element[2],"",30)
-        element = getElements(driver, By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick^='Schedule_H_Entry']", 30)
-    
+        element = driver.find_elements(By.CSS_SELECTOR,"span.d-lg-flex.d-sm-inline-block.ms-lg-0.ms-3")
+        operateElement("click",element[1],"",30)
+        element = driver.find_elements(By.CSS_SELECTOR,"a.dropdown-item.fw-bold[onclick='L1_Entry()")
         operateElement("click",element[0],"",30)
-     
-     
 
         with open("./memo/log.txt", "w") as f:
             f.write("")
