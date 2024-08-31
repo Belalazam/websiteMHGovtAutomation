@@ -350,7 +350,7 @@ def logic():
                     fillOutputArea(outputArea1,sr_number,0)
 
                 
-                time.sleep(5)
+                time.sleep(10)
 
     
                 element = getElement(driver, By.CSS_SELECTOR, "button.swal2-confirm", 10)

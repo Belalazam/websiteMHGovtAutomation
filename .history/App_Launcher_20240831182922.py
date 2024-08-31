@@ -319,6 +319,8 @@ def logic():
                     element.send_keys(crop_un_irri_3)
 
 
+                time.sleep(30)
+
                
                 try:
                     element = getElement(driver, By.CSS_SELECTOR, "select[name='source_irr']", 10)
@@ -348,9 +350,6 @@ def logic():
                     with open('./memo/failure.txt','a') as f:
                         f.write(f'{sr_number} with error {element.text}' + '\n')
                     fillOutputArea(outputArea1,sr_number,0)
-
-                
-                time.sleep(5)
 
     
                 element = getElement(driver, By.CSS_SELECTOR, "button.swal2-confirm", 10)
