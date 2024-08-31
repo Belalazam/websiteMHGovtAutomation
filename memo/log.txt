@@ -1,2 +1,28 @@
-failed for 0 with error list index out of range at 2024-08-31 00:41:36.459336
-failed  with error unsupported operand type(s) for +: 'int' and 'str' at 2024-08-31 00:41:36.461263
+failed for 0 with error Message: element not interactable
+  (Session info: chrome=128.0.6613.113)
+Stacktrace:
+	GetHandleVerifier [0x00007FF7074DB632+29090]
+	(No symbol) [0x00007FF70744E6E9]
+	(No symbol) [0x00007FF70730AFF9]
+	(No symbol) [0x00007FF707358823]
+	(No symbol) [0x00007FF707356A4C]
+	(No symbol) [0x00007FF7073866EA]
+	(No symbol) [0x00007FF7073526A6]
+	(No symbol) [0x00007FF707386900]
+	(No symbol) [0x00007FF7073A65D9]
+	(No symbol) [0x00007FF707386493]
+	(No symbol) [0x00007FF7073509B1]
+	(No symbol) [0x00007FF707351B11]
+	GetHandleVerifier [0x00007FF7077F883D+3294125]
+	GetHandleVerifier [0x00007FF707844423+3604371]
+	GetHandleVerifier [0x00007FF70783A2E7+3563095]
+	GetHandleVerifier [0x00007FF707596F16+797318]
+	(No symbol) [0x00007FF70745986F]
+	(No symbol) [0x00007FF707455454]
+	(No symbol) [0x00007FF7074555E0]
+	(No symbol) [0x00007FF707444A7F]
+	BaseThreadInitThunk [0x00007FFEB635257D+29]
+	RtlUserThreadStart [0x00007FFEB72CAF28+40]
+ at 2024-08-31 16:16:51.702299
+failed  with error unsupported operand type(s) for +: 'int' and 'str' at 2024-08-31 16:16:51.703302
+failed  with error HTTPConnectionPool(host='localhost', port=61821): Max retries exceeded with url: /session/0e1c3646ee67079e91926af7b98f6cf1/elements (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001C2A20D39D0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')) at 2024-08-31 16:17:55.483001
