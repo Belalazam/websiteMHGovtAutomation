@@ -1,2 +1,9 @@
 
-0
+5 with error Net Area Sown (col. 6) is more than Gross Cropped Area (col. 18) -- !!! INVALID !!!
+6 with error Net Unirrigated Area (column 5) is more than Gross unirrigated Area (column 17) -- !!! INVALID !!!
+8 with error Net Area Sown (col. 6) is more than Gross Cropped Area (col. 18) -- !!! INVALID !!!
+9 with error Please insert crop details
+10 with error Please insert crop details
+11 with error Please insert crop details
+13 with error Please insert crop details
+13
